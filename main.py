@@ -45,7 +45,7 @@ def exec(cmd: str) -> str:
 
 @mcp.tool()
 def get_date() -> str:
-    """Return today's date in 'Month day-with-ordinal, year' format (e.g., 'May 9th, 2026')."""
+    """Get current date."""
     today = date.today()
     day = today.day
 
