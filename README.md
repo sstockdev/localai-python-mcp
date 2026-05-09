@@ -1,8 +1,10 @@
 # LocalAI Python MCP
 
-A small MCP server. Use at your own risk. Resources / Tools:
+A small MCP server. Use at your own risk.
+
+Tools:
 - an `exec` tool for executing Python snippets and returning output
-- a `currentdate` resource for retrieving today's date
+- a `get_date` tool for retrieving today's date
 
 ## Usage
 
@@ -46,9 +48,7 @@ Replace `FILEPATH_TO_PROJECT` with the absolute path to this repository.
 
 Tool:
 - `exec(cmd: str) -> str`
-
-Resource:
-- `info://currentdate`
+- `get_date() -> str`
 
 ## Notes
 

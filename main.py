@@ -43,10 +43,19 @@ def exec(cmd: str) -> str:
         return f"{output}\n{result}"
     return str(result)
 
-@mcp.resource("info://currentdate")
+@mcp.tool()
 def get_date() -> str:
-    """Get current date."""
-    return date.today().isoformat()
+    """Return today's date in 'Month day-with-ordinal, year' format (e.g., 'May 9th, 2026')."""
+    today = date.today()
+    day = today.day
+
+    # Handle ordinal suffixes with special cases for 11, 12, and 13.
+    if 11 <= day % 100 <= 13:
+        suffix = "th"
+    else:
+        suffix = {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
+
+    return f"{today.strftime('%B')} {day}{suffix}, {today.year}"
 
 
 if __name__ == "__main__":
