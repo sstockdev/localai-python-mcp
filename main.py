@@ -6,12 +6,10 @@ Run from the repository root:
 """
 
 from datetime import date
-import builtins
-import io
 import traceback
-from contextlib import redirect_stdout
 
 from mcp.server.fastmcp import FastMCP
+from pydantic_monty import Monty, CollectString, MontyError
 
 # Create an MCP server
 mcp = FastMCP("localai-python-mcp", json_response=True)
@@ -19,29 +17,15 @@ mcp = FastMCP("localai-python-mcp", json_response=True)
 @mcp.tool()
 def exec(cmd: str) -> str:
     """Execute python code and return the result."""
-    if not cmd.strip():
-        return ""
-
-    namespace: dict[str, object] = {}
-    stdout = io.StringIO()
-
     try:
-        with redirect_stdout(stdout):
-            try:
-                result = builtins.eval(cmd, {}, namespace)
-            except SyntaxError:
-                builtins.exec(cmd, {}, namespace)
-                result = None
-    except Exception:
-        return traceback.format_exc().strip()
-
-    output = stdout.getvalue().rstrip("\n")
-    if result is None:
-        return output
-
-    if output:
-        return f"{output}\n{result}"
-    return str(result)
+        output_collector = CollectString()
+        monty = Monty(cmd)
+        monty.run(print_callback=output_collector)
+        return output_collector.output
+    except MontyError as e:
+        return f"Error: {e}"
+    except Exception as e:
+        return f"Error: {traceback.format_exc()}"
 
 @mcp.tool()
 def get_date() -> str:
